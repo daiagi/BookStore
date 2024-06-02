@@ -18,4 +18,9 @@ public class HelloController {
     public String sayHello() {
         return exampleService.getGreeting();
     }
+
+    @GetMapping("/book-store/hello")
+    public String sayHello2() {
+        return exampleService.getGreeting();
+    }
 }
