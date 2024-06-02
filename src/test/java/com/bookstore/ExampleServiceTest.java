@@ -9,6 +9,6 @@ public class ExampleServiceTest {
     @Test
     public void testGetGreeting() {
         ExampleService service = new ExampleService();
-        assertEquals("Hello, World!", service.getGreeting());
+        assertEquals("Hello, Worldsss!", service.getGreeting());
     }
 }
