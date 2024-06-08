@@ -9,7 +9,7 @@ COPY src src
 RUN mvn clean package -DskipTests
 
 # Use the official OpenJDK image to run your application
-FROM openjdk:17-jre-slim
+FROM openjdk:17-jdk-slim
 COPY --from=builder /app/target/*.jar app.jar
 EXPOSE 8080
 ENTRYPOINT ["java", "-jar", "app.jar"]
