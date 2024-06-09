@@ -72,10 +72,15 @@ Resources:
           PortMappings:
             - ContainerPort: 8080
           Environment:
-            - Name: "HOSTNAME"
-              Value: "localhost"
-            - Name: "PORT"
-              Value: "8080"
+            - Name: "DB_HOST"
+              Value: "bookstore-db.crmhgqdxqmag.ap-southeast-1.rds.amazonaws.com"
+            - Name: "DB_PORT"
+              Value: "5432"
+          Secrets:
+            - Name: "DB_USERNAME"
+              ValueFrom: !Sub "arn:aws:ssm:ap-southeast-1:276662339380:parameter/bookstore/db/username"
+            - Name: "DB_PASSWORD"
+              ValueFrom: !Sub "arn:aws:ssm:ap-southeast-1:276662339380:parameter/bookstore/db/password"
 
   ECSService:
     Type: "AWS::ECS::Service"

@@ -1,0 +1,34 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Resources:
+  PostgresDBInstance:
+    Type: AWS::RDS::DBInstance
+    Properties:
+      DBInstanceClass: db.t3.micro
+      AllocatedStorage: 20
+      DBInstanceIdentifier: bookstore-db
+      Engine: postgres
+      EngineVersion: "16.3"
+      MasterUsername: !Sub "{{resolve:ssm:/bookstore/db/username}}"
+      MasterUserPassword: !Sub "{{resolve:ssm-secure:/bookstore/db/password}}"
+      DBName: bookstore
+      VPCSecurityGroups:
+        - !GetAtt PostgresSecurityGroup.GroupId
+      PubliclyAccessible: true
+
+  PostgresSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Allow access to PostgreSQL
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 5432
+          ToPort: 5432
+          CidrIp: 0.0.0.0/0
+
+Outputs:
+  PostgresEndpoint:
+    Value: !GetAtt PostgresDBInstance.Endpoint.Address
+    Description: The endpoint of the PostgreSQL instance
+  PostgresPort:
+    Value: !GetAtt PostgresDBInstance.Endpoint.Port
+    Description: The port of the PostgreSQL instance
