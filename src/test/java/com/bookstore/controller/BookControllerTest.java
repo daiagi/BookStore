@@ -44,7 +44,7 @@ public class BookControllerTest {
         when(bookService.getAllBooks()).thenReturn(books);
 
         // Act and Assert
-        mockMvc.perform(get("/books"))
+        mockMvc.perform(get("/book-store/books"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].title").value("Title1"))
                 .andExpect(jsonPath("$[1].title").value("Title2"));
@@ -58,7 +58,7 @@ public class BookControllerTest {
         when(bookService.getBook(1L)).thenReturn(book);
 
         // Act and Assert
-        mockMvc.perform(get("/books/1"))
+        mockMvc.perform(get("/book-store/books/1"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.title").value("Test Book"));
     }
@@ -71,7 +71,7 @@ public class BookControllerTest {
         when(bookService.createBook(any(BookDTO.class))).thenReturn(bookDTO);
 
         // Act and Assert
-        mockMvc.perform(post("/books")
+        mockMvc.perform(post("/book-store/books")
                 .contentType("application/json")
                 .content(
                         "{\"title\": \"Test Book\", \"author\": \"Author\", \"description\": \"Description\", \"price\": 10.0, \"category\": \"Category\"}"))
@@ -87,7 +87,7 @@ public class BookControllerTest {
         when(bookService.updateBookPrice(1L, 15.0)).thenReturn(updatedBook);
 
         // Act and Assert
-        mockMvc.perform(put("/books/1/price")
+        mockMvc.perform(put("/book-store/books/1/price")
                 .param("price", "15.0"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.price").value(15.0));
@@ -96,7 +96,7 @@ public class BookControllerTest {
     @Test
     void testDeleteBook() throws Exception {
         // Act and Assert
-        mockMvc.perform(delete("/books/1"))
+        mockMvc.perform(delete("/book-store/books/1"))
                 .andExpect(status().isOk());
     }
 }
