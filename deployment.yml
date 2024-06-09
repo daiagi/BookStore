@@ -76,6 +76,8 @@ Resources:
               Value: "bookstore-db.crmhgqdxqmag.ap-southeast-1.rds.amazonaws.com"
             - Name: "DB_PORT"
               Value: "5432"
+            - Name: "DB_NAME"
+              Value: "bookstore"
           Secrets:
             - Name: "DB_USERNAME"
               ValueFrom: !Sub "arn:aws:ssm:ap-southeast-1:276662339380:parameter/bookstore/db/username"
