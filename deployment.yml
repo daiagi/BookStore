@@ -78,6 +78,8 @@ Resources:
               Value: "5432"
             - Name: "DB_NAME"
               Value: "bookstore"
+            - Name: "DUMMY_VALUE"
+              Value: "dummy"
           Secrets:
             - Name: "DB_USERNAME"
               ValueFrom: !Sub "arn:aws:ssm:ap-southeast-1:276662339380:parameter/bookstore/db/username"
