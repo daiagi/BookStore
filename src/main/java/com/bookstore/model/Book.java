@@ -1,4 +1,5 @@
 package com.bookstore.model;
+import javax.persistence.Table;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
