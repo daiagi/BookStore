@@ -9,7 +9,6 @@ env:
   ECR_REPOSITORY: book-store-repo
   ECS_SERVICE: book-store-service
   ECS_CLUSTER: book-store-cluster
-  ECS_TASK_DEFINITION: .aws/task-definition.json
   CONTAINER_NAME: book-store-container
 
 permissions:
@@ -28,7 +27,7 @@ jobs:
         uses: actions/setup-java@v4
         with:
           java-version: "17"
-          distribution: 'adopt'
+          distribution: "adopt"
 
       - name: Cache Maven packages
         uses: actions/cache@v4
@@ -78,24 +77,49 @@ jobs:
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
 
+      - name: Get current task definition
+        id: get-task-def
+        run: |
+          aws ecs describe-task-definition --task-definition ${{ env.ECS_SERVICE }} > task-def.json
+
+      - name: Update task definition with new image
+        id: update-task-def
+        run: |
+          jq '.taskDefinition | .containerDefinitions[0].image = "${{ steps.build-image.outputs.image }}" | del(.taskDefinitionArn, .revision, .status, .requiresAttributes, .compatibilities, .registeredAt, .registeredBy)' task-def.json > new-task-def.json
+
+      - name: Register new task definition
+        id: register-task-def
+        run: |
+          aws ecs register-task-definition --cli-input-json file://new-task-def.json > new-task-def-output.json
+          echo "TASK_DEF_ARN=$(jq -r '.taskDefinition.taskDefinitionArn' new-task-def-output.json)" >> $GITHUB_ENV
+
+      - name: Deploy Amazon ECS task definition
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+        with:
+          task-definition: ${{ env.TASK_DEF_ARN }}
+          service: ${{ env.ECS_SERVICE }}
+          cluster: ${{ env.ECS_CLUSTER }}
+          wait-for-service-stability: true
+
+      # - name: Fill in the new image ID in the Amazon ECS task definition
+      #   id: task-def
+      #   uses: aws-actions/amazon-ecs-render-task-definition@v1
+      #   with:
+      #     task-definition: ${{ env.ECS_TASK_DEFINITION }}
+      #     container-name: ${{ env.CONTAINER_NAME }}
+      #     image: ${{ steps.build-image.outputs.image }}
+
+      # - name: Deploy Amazon ECS task definition
+      #   uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+      #   with:
+      #     task-definition: ${{ steps.task-def.outputs.task-definition }}
+      #     service: ${{ env.ECS_SERVICE }}
+      #     cluster: ${{ env.ECS_CLUSTER }}
+      #     wait-for-service-stability: true
+
       - name: Clean old images
         run: |
           aws ecr list-images --repository-name ${{ env.ECR_REPOSITORY }} --query 'imageIds[?imageTag!=`${{ github.sha }}` && imageTag!=`latest`].[imageDigest]' --output text | 
           while read digest; do
             aws ecr batch-delete-image --repository-name ${{ env.ECR_REPOSITORY }} --image-ids imageDigest=$digest
           done
-      - name: Fill in the new image ID in the Amazon ECS task definition
-        id: task-def
-        uses: aws-actions/amazon-ecs-render-task-definition@v1
-        with:
-          task-definition: ${{ env.ECS_TASK_DEFINITION }}
-          container-name: ${{ env.CONTAINER_NAME }}
-          image: ${{ steps.build-image.outputs.image }}
-
-      - name: Deploy Amazon ECS task definition
-        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
-        with:
-          task-definition: ${{ steps.task-def.outputs.task-definition }}
-          service: ${{ env.ECS_SERVICE }}
-          cluster: ${{ env.ECS_CLUSTER }}
-          wait-for-service-stability: true
