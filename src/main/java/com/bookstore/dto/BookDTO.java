@@ -1,5 +1,7 @@
 package com.bookstore.dto;
 
+import com.bookstore.model.Book;
+
 public class BookDTO {
     private String title;
     private String author;
@@ -9,6 +11,14 @@ public class BookDTO {
 
     // Constructors
     public BookDTO() {}
+
+    public BookDTO(Book book) {
+        this.title = book.getTitle();
+        this.author = book.getAuthor();
+        this.description = book.getDescription();
+        this.price = book.getPrice();
+        this.category = book.getCategory();
+    }
 
     public BookDTO(String title, String author, String description, double price, String category) {
         this.title = title;

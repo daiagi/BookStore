@@ -21,6 +21,14 @@ public class BookService {
         return bookRepository.findAll().stream().map(this::convertToDTO).toList();
     }
 
+    public List<BookDTO> searchBooks(String searchTerm) {
+        return bookRepository.searchBooks(searchTerm)
+                .stream()
+                .peek(System.out::println)
+                .map(BookDTO::new)
+                .toList();
+    }
+
     public BookDTO getBook(Long id) {
         Book retreivedBook = bookRepository.findById(id).orElse(null);
         if (retreivedBook != null) {
