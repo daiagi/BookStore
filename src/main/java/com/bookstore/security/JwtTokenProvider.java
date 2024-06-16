@@ -24,8 +24,8 @@ public class JwtTokenProvider {
     @Value("${jwt.secret}")
     private String secretKey;
 
-    // @Value("${jwt.expiration}")
-    private long validityInMilliseconds = 3600000;
+    @Value("${jwt.expiration}")
+    private long validityInMilliseconds;
 
     private SecretKey getSigningKey() {
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
