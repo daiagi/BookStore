@@ -1,0 +1,69 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: "Deploy MongoDB on EC2 for the book-store application"
+
+Metadata:
+  AWS::CloudFormation::StackName: "bookstore-mongodb-stack"
+  Description: "AWS CloudFormation Template to deploy MongoDB on an EC2 instance for the bookstore application."
+
+Parameters:
+  InstanceType:
+    Type: String
+    Default: t2.micro
+    Description: "EC2 instance type for MongoDB."
+    AllowedValues:
+      - t2.micro
+      - t2.small
+      - t2.medium
+  VPCID:
+    Type: String
+    Description: "The ID of the VPC."
+    Default: vpc-0e986d463eaaa6c83
+  PublicSubnetID:
+    Type: String
+    Description: "The ID of the public subnet where the EC2 instance will be deployed."
+    Default: subnet-0e2cc1721e990cfbc
+
+Resources:
+
+
+  MongoDBSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: "Allow access to MongoDB"
+      VpcId: !Ref VPCID
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 27017
+          ToPort: 27017
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
+
+  MongoDBInstance:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: !Ref InstanceType
+      KeyName: bookstore-mongodb-keypair
+      SecurityGroupIds:
+        - !Ref MongoDBSecurityGroup
+      SubnetId: !Ref PublicSubnetID
+      ImageId: ami-055752db5fae9d751 # bitnami-mongodb-6.0.11-5-r08-linux-debian-11-x86_64-hvm-ebs-nami
+      UserData:
+        Fn::Base64: |
+          #!/bin/bash
+          systemctl start mongod
+          systemctl enable mongod
+      Tags:
+        - Key: Name
+          Value: bookstore-mongodb-instance
+
+Outputs:
+  MongoDBEndpoint:
+    Value: !GetAtt MongoDBInstance.PublicDnsName
+    Description: "The public DNS name of the MongoDB instance"
+  MongoDBPort:
+    Value: "27017"
+    Description: "The port on which MongoDB is running"
+
