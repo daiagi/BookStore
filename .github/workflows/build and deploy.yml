@@ -9,6 +9,7 @@ env:
   ECR_REPOSITORY: book-store-repo
   ECS_SERVICE: book-store-service
   ECS_CLUSTER: book-store-cluster
+  ECS_TASK_DEFINITION: book-store-task
   CONTAINER_NAME: book-store-container
 
 permissions:
@@ -80,7 +81,7 @@ jobs:
       - name: Get current task definition
         id: get-task-def
         run: |
-          aws ecs describe-task-definition --task-definition ${{ env.ECS_SERVICE }} > task-def.json
+          aws ecs describe-task-definition --task-definition ${{  env.ECS_TASK_DEFINITION}} | tee task-def.json > /dev/null
 
       - name: Update task definition with new image
         id: update-task-def
