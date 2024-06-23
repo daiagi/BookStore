@@ -35,7 +35,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/book-store/auth/**").permitAll() // Allow all requests to auth paths
                 .antMatchers(HttpMethod.GET, "/book-store/books/**").permitAll() // Allow read operations
                 .antMatchers("/book-store/health").permitAll() // Allow all requests to "/hello
-                .anyRequest().authenticated() // Require authentication for all other requests
+                 // .anyRequest().authenticated() Require authentication for all other requests
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
