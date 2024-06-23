@@ -120,7 +120,16 @@ jobs:
 
       - name: Clean old images
         run: |
-          aws ecr list-images --repository-name ${{ env.ECR_REPOSITORY }} --query 'imageIds[?imageTag!=`${{ github.sha }}` && imageTag!=`latest`].[imageDigest]' --output text | 
-          while read digest; do
-            aws ecr batch-delete-image --repository-name ${{ env.ECR_REPOSITORY }} --image-ids imageDigest=$digest
-          done
+          image_details=$(aws ecr describe-images --repository-name ${{ env.ECR_REPOSITORY }} --query 'imageDetails[*].[imageDigest,imagePushedAt]' --output json)
+          echo "Image Details: $image_details"
+          
+          images_to_delete=$(echo $image_details | jq -r 'map({"imageDigest": .[0], "imagePushedAt": .[1]}) | sort_by(.imagePushedAt) | reverse | .[4:] | .[].imageDigest')
+          echo "Images to Delete: $images_to_delete"
+          
+          if [ -n "$images_to_delete" ]; then
+            for digest in $images_to_delete; do
+              aws ecr batch-delete-image --repository-name ${{ env.ECR_REPOSITORY }} --image-ids imageDigest=$digest
+            done
+          else
+            echo "Less than 4 images available. No images to delete."
+          fi
