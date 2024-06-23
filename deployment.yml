@@ -78,6 +78,8 @@ Resources:
               Value: "5432"
             - Name: "DB_NAME"
               Value: "bookstore"
+            - Name: "MONGO_HOST"
+              Value: "ec2-52-221-229-10.ap-southeast-1.compute.amazonaws.com "
           Secrets:
             - Name: "DB_USERNAME"
               ValueFrom: !Sub "arn:aws:ssm:ap-southeast-1:276662339380:parameter/bookstore/db/username"
@@ -85,6 +87,10 @@ Resources:
               ValueFrom: !Sub "arn:aws:ssm:ap-southeast-1:276662339380:parameter/bookstore/db/password"
             - Name: "JWT_SECRET"
               ValueFrom: !Sub "arn:aws:ssm:ap-southeast-1:276662339380:parameter/bookstore/jwt_secret"
+            - Name: "MONGO_USERNAME"
+              ValueFrom: !Sub "arn:aws:ssm:ap-southeast-1:276662339380:parameter/bookstore/mongo/username"
+            - Name: "MONGO_PASSWORD"
+              ValueFrom: !Sub "arn:aws:ssm:ap-southeast-1:276662339380:parameter/bookstore/mongo/password"
 
   ECSService:
     Type: "AWS::ECS::Service"
