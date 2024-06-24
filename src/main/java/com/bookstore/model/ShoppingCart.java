@@ -11,7 +11,14 @@ public class ShoppingCart {
     @Id
     private String id;
     private String userId;
-    private List<CartItem> items= new ArrayList<>();
+    private List<CartItem> items = new ArrayList<>();
+
+    public ShoppingCart() {
+    }
+
+    public ShoppingCart(String userId) {
+        this.userId = userId;
+    }
     // Getters and setters
 
     public String getId() {
@@ -47,6 +54,15 @@ public class ShoppingCart {
         private String bookId;
         private int quantity;
         private double price;
+
+        public CartItem() {
+        }
+
+        public CartItem(String bookId, int quantity, double price) {
+            this.bookId = bookId;
+            this.quantity = quantity;
+            this.price = price;
+        }
 
         // Getters and setters
         public String getBookId() {
