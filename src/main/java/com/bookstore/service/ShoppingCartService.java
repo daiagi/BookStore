@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 public class ShoppingCartService {
@@ -32,20 +33,36 @@ public class ShoppingCartService {
         return getOrCreateCart(userId);
     }
 
-    public ShoppingCart addToCart(String userId, ShoppingCart.CartItem item) {
+    public ShoppingCart addToCart(String userId, ShoppingCart.CartItem item) throws IllegalArgumentException {
+
+        if (item.getQuantity() <= 0) {
+            throw new IllegalArgumentException("Quantity must be greater than 0");
+
+        }
+
+        if (item.getPrice() <= 0) {
+            throw new IllegalArgumentException("Price must be greater than 0");
+        }
         ShoppingCart cart = getOrCreateCart(userId);
         cart.getItems().add(item);
         return shoppingCartRepository.save(cart);
     }
 
-    public ShoppingCart updateItemQuantity(String userId, String bookId, int quantity) {
-        ShoppingCart cart = getCartByUserId(userId);
-        cart.getItems().stream()
-                .filter(item -> item.getBookId().equals(bookId))
-                .findFirst()
-                .ifPresent(item -> item.setQuantity(quantity));
-        return shoppingCartRepository.save(cart);
+public ShoppingCart updateItemQuantity(String userId, String bookId, int quantity) throws NoSuchElementException, IllegalArgumentException {
+    ShoppingCart cart = getCartByUserId(userId);
+    if (quantity < 0) {
+        throw new IllegalArgumentException("Quantity must be greater than or equal to 0");
     }
+    if (quantity == 0) {
+        return removeFromCart(userId, bookId);
+    }
+    ShoppingCart.CartItem item = cart.getItems().stream()
+            .filter(cartItem -> cartItem.getBookId().equals(bookId))
+            .findFirst()
+            .orElseThrow(() -> new NoSuchElementException("Item not found in cart"));
+    item.setQuantity(quantity);
+    return shoppingCartRepository.save(cart);
+}
 
     public ShoppingCart removeFromCart(String userId, String bookId) {
         ShoppingCart cart = getCartByUserId(userId);
