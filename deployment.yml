@@ -79,7 +79,9 @@ Resources:
             - Name: "DB_NAME"
               Value: "bookstore"
             - Name: "MONGO_HOST"
-              Value: "ec2-52-221-229-10.ap-southeast-1.compute.amazonaws.com "
+              Value: "ec2-52-221-229-10.ap-southeast-1.compute.amazonaws.com"
+            - Name: "SHOPPING_CARTS_COLLECTION"
+              Value: "bookStoreShoppingCarts"
           Secrets:
             - Name: "DB_USERNAME"
               ValueFrom: !Sub "arn:aws:ssm:ap-southeast-1:276662339380:parameter/bookstore/db/username"
