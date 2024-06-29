@@ -13,6 +13,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.Date;
 import javax.crypto.SecretKey;
 import javax.servlet.http.HttpServletRequest;
@@ -24,7 +26,7 @@ public class JwtTokenProvider {
     private String secretKey;
 
     @Value("${jwt.expiration}")
-    private long validityInMilliseconds;
+    private long validityInSeconds;
 
     private SecretKey getSigningKey() {
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
@@ -34,13 +36,13 @@ public class JwtTokenProvider {
     public String createToken(Long userId, String email, String role) {
         Claims claims = Jwts.claims().subject(email).add("role", role).add("user_id", userId).build();
 
-        Date now = new Date();
-        Date validity = new Date(now.getTime() + validityInMilliseconds);
+        Instant now = Instant.now();
+        Instant validity = now.plus(Duration.ofSeconds(validityInSeconds));
 
         return Jwts.builder()
                 .claims(claims)
-                .issuedAt(now)
-                .expiration(validity)
+                .issuedAt(Date.from(now))
+                .expiration(Date.from(validity))
                 .signWith(getSigningKey())
                 .compact();
     }
