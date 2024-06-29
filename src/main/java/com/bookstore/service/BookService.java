@@ -3,7 +3,6 @@ package com.bookstore.service;
 import com.bookstore.dto.BookDTO;
 import com.bookstore.model.Book;
 import com.bookstore.repository.BookRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,7 +11,6 @@ import java.util.List;
 public class BookService {
     private final BookRepository bookRepository;
 
-    @Autowired
     public BookService(BookRepository bookRepository) {
         this.bookRepository = bookRepository;
     }
@@ -24,12 +22,11 @@ public class BookService {
     public List<BookDTO> searchBooks(String searchTerm) {
         return bookRepository.searchBooks(searchTerm)
                 .stream()
-                .peek(System.out::println)
                 .map(BookDTO::new)
                 .toList();
     }
 
-    public BookDTO getBook(Long id) {
+    public BookDTO getBook(Integer id) {
         Book retreivedBook = bookRepository.findById(id).orElse(null);
         if (retreivedBook != null) {
             return convertToDTO(retreivedBook);
@@ -43,7 +40,7 @@ public class BookService {
         return convertToDTO(book);
     }
 
-    public BookDTO updateBookPrice(Long id, double newPrice) {
+    public BookDTO updateBookPrice(Integer id, double newPrice) {
         Book book = bookRepository.findById(id).orElse(null);
         if (book != null) {
             book.setPrice(newPrice);
@@ -53,7 +50,7 @@ public class BookService {
         return null;
     }
 
-    public void deleteBook(Long id) {
+    public void deleteBook(Integer id) {
         bookRepository.deleteById(id);
     }
 

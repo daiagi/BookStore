@@ -53,28 +53,28 @@ class BookServiceTest {
     void testGetBook() {
         // Arrange
         Book book = new Book("Test Book", "Author", "Description", 10.0, "Category");
-        book.setId(1L);
-        when(bookRepository.findById(1L)).thenReturn(Optional.of(book));
+        book.setId(1);
+        when(bookRepository.findById(1)).thenReturn(Optional.of(book));
 
         // Act
-        BookDTO foundBook = bookService.getBook(1L);
+        BookDTO foundBook = bookService.getBook(1);
 
         // Assert
         assertEquals("Test Book", foundBook.getTitle());
-        verify(bookRepository, times(1)).findById(1L);
+        verify(bookRepository, times(1)).findById(1);
     }
 
     @Test
     void testGetBook_NotFound() {
         // Arrange
-        when(bookRepository.findById(1L)).thenReturn(Optional.empty());
+        when(bookRepository.findById(1)).thenReturn(Optional.empty());
 
         // Act
-        BookDTO foundBook = bookService.getBook(1L);
+        BookDTO foundBook = bookService.getBook(1);
 
         // Assert
         assertNull(foundBook);
-        verify(bookRepository, times(1)).findById(1L);
+        verify(bookRepository, times(1)).findById(1);
     }
 
     @Test
@@ -100,39 +100,39 @@ class BookServiceTest {
     void testUpdateBookPrice() {
         // Arrange
         Book book = new Book("Test Book", "Author", "Description", 10.0, "Category");
-        book.setId(1L);
+        book.setId(1);
 
-        when(bookRepository.findById(1L)).thenReturn(Optional.of(book));
+        when(bookRepository.findById(1)).thenReturn(Optional.of(book));
         when(bookRepository.save(any(Book.class))).thenReturn(book);
 
         // Act
-        BookDTO updatedBook = bookService.updateBookPrice(1L, 15.0);
+        BookDTO updatedBook = bookService.updateBookPrice(1, 15.0);
 
         // Assert
         assertEquals(15.0, updatedBook.getPrice());
-        verify(bookRepository, times(1)).findById(1L);
+        verify(bookRepository, times(1)).findById(1);
         verify(bookRepository, times(1)).save(any(Book.class));
     }
 
     @Test
     void testUpdateBookPrice_NotFound() {
         // Arrange
-        when(bookRepository.findById(1L)).thenReturn(Optional.empty());
+        when(bookRepository.findById(1)).thenReturn(Optional.empty());
 
         // Act
-        BookDTO updatedBook = bookService.updateBookPrice(1L, 15.0);
+        BookDTO updatedBook = bookService.updateBookPrice(1, 15.0);
 
         // Assert
         assertNull(updatedBook);
-        verify(bookRepository, times(1)).findById(1L);
+        verify(bookRepository, times(1)).findById(1);
     }
 
     @Test
     void testDeleteBook() {
         // Act
-        bookService.deleteBook(1L);
+        bookService.deleteBook(1);
 
         // Assert
-        verify(bookRepository, times(1)).deleteById(1L);
+        verify(bookRepository, times(1)).deleteById(1);
     }
 }
