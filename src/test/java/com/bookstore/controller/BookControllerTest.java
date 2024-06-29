@@ -59,7 +59,7 @@ class BookControllerTest {
         // Arrange
         BookDTO book = new BookDTO("Test Book", "Author", "Description", 10.0, "Category");
 
-        when(bookService.getBook(1L)).thenReturn(book);
+        when(bookService.getBook(1)).thenReturn(book);
 
         // Act and Assert
         mockMvc.perform(get("/book-store/books/1"))
@@ -88,7 +88,7 @@ class BookControllerTest {
         // Arrange
         BookDTO updatedBook = new BookDTO("Test Book", "Author", "Description", 15.0, "Category");
 
-        when(bookService.updateBookPrice(1L, 15.0)).thenReturn(updatedBook);
+        when(bookService.updateBookPrice(1, 15.0)).thenReturn(updatedBook);
 
         // Act and Assert
         mockMvc.perform(put("/book-store/books/1/price")
