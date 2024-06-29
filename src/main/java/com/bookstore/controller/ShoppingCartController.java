@@ -3,8 +3,6 @@ package com.bookstore.controller;
 import com.bookstore.model.ShoppingCart;
 import com.bookstore.service.ShoppingCartService;
 
-// import org.hibernate.mapping.List;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
@@ -13,7 +11,6 @@ import java.util.List;
 public class ShoppingCartController {
     private final ShoppingCartService shoppingCartService;
 
-    @Autowired
     public ShoppingCartController(ShoppingCartService shoppingCartService) {
         this.shoppingCartService = shoppingCartService;
     }
