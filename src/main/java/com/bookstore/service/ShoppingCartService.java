@@ -2,17 +2,17 @@ package com.bookstore.service;
 
 import com.bookstore.model.ShoppingCart;
 import com.bookstore.repository.ShoppingCartRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class ShoppingCartService {
     private final ShoppingCartRepository shoppingCartRepository;
 
-    @Autowired
     public ShoppingCartService(ShoppingCartRepository shoppingCartRepository) {
         this.shoppingCartRepository = shoppingCartRepository;
     }
@@ -81,5 +81,14 @@ public ShoppingCart updateItemQuantity(String userId, String bookId, int quantit
     public void clearCart(String userId) {
         shoppingCartRepository.findByUserId(userId)
                 .ifPresent(shoppingCartRepository::delete);
+    }
+
+        public Set<String> getUserIdsWithBookInCart(int bookId) {
+        List<ShoppingCart> carts = shoppingCartRepository.findByBookIdInItems(String.valueOf(bookId));
+        //log carts
+        System.out.println("Carts: " + carts);
+        return carts.stream()
+                .map(ShoppingCart::getUserId)
+                .collect(Collectors.toSet());
     }
 }
