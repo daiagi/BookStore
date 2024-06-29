@@ -13,7 +13,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 
-
 import java.util.Date;
 import javax.crypto.SecretKey;
 import javax.servlet.http.HttpServletRequest;
@@ -32,8 +31,8 @@ public class JwtTokenProvider {
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public String createToken(String email, String role) {
-        Claims claims = Jwts.claims().subject(email).add("role", role).build();
+    public String createToken(Long userId, String email, String role) {
+        Claims claims = Jwts.claims().subject(email).add("role", role).add("user_id", userId).build();
 
         Date now = new Date();
         Date validity = new Date(now.getTime() + validityInMilliseconds);
@@ -77,7 +76,7 @@ public class JwtTokenProvider {
                     .build();
 
             UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                    userDetails, null, userDetails.getAuthorities());
+                    userDetails, userDetails.getAuthorities());
             authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
             return authentication;
         }

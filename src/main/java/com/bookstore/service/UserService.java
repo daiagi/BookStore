@@ -37,7 +37,7 @@ public class UserService {
                 .orElseThrow(() -> new IllegalArgumentException("Invalid username or password"));
 
         if (new BCryptPasswordEncoder().matches(password, user.getPasswordHash())) {
-            return jwtTokenProvider.createToken(email, user.getRole());
+            return jwtTokenProvider.createToken(user.getId(), email, user.getRole());
         } else {
             throw new IllegalArgumentException("Invalid username or password");
         }
