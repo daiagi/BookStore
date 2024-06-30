@@ -4,6 +4,8 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Component;
 
+import com.bookstore.util.Errors;
+
 import java.time.LocalDateTime;
 import java.util.concurrent.TimeUnit;
 
@@ -22,11 +24,17 @@ public class InventoryReservationHandler {
     }
 
     public void reserveStock(int bookId, int amount) {
+        if (amount <= 0) {
+            throw new IllegalArgumentException(Errors.INVALID_AMOUNT.getMessage());
+        }
         increaseReservedStock(bookId, amount);
         setReservationTimestamp(bookId, LocalDateTime.now());
     }
 
     public void increaseReservedStock(int bookId, int amount) {
+        if (amount <= 0) {
+            throw new IllegalArgumentException(Errors.INVALID_AMOUNT.getMessage());
+        }
         ValueOperations<String, Object> ops = redisTemplate.opsForValue();
 
         String key = RESERVED_STOCK_PREFIX + bookId;
@@ -35,6 +43,9 @@ public class InventoryReservationHandler {
     }
 
     public void reduceReservedStock(int bookId, int amount) {
+        if (amount <= 0) {
+            throw new IllegalArgumentException(Errors.INVALID_AMOUNT.getMessage());
+        }
         ValueOperations<String, Object> ops = redisTemplate.opsForValue();
         String key = RESERVED_STOCK_PREFIX + bookId;
         ops.increment(key, -amount);
