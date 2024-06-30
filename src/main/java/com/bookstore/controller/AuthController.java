@@ -3,20 +3,21 @@ package com.bookstore.controller;
 import com.bookstore.dto.UserDTO;
 import com.bookstore.service.UserService;
 
+import io.swagger.annotations.Api;
+
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 @RestController
-@RequestMapping("/book-store/auth")
+@RequestMapping("/auth")
+@Api(value = "Book Store", tags = "Auth")
 public class AuthController {
 
     private final UserService userService;
 
-    @Autowired
     public AuthController(UserService userService) {
         this.userService = userService;
     }

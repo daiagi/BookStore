@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/book-store/books")
-@Api(value = "Book Store", tags = "Book Management")
+@RequestMapping("/books")
+@Api(value = "Book Store", tags = "Books")
 public class BookController {
     private final BookService bookService;
 

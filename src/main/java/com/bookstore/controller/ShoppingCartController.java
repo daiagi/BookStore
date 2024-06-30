@@ -3,11 +3,14 @@ package com.bookstore.controller;
 import com.bookstore.model.ShoppingCart;
 import com.bookstore.service.ShoppingCartService;
 
+import io.swagger.annotations.Api;
+
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/book-store/cart")
+@RequestMapping("/cart")
+@Api(value = "Book Store", tags = "shopping carts")
 public class ShoppingCartController {
     private final ShoppingCartService shoppingCartService;
 

@@ -49,7 +49,7 @@ class ShoppingCartControllerTest {
         when(shoppingCartService.findAll()).thenReturn(List.of(cart1, cart2));
 
         // Act and Assert
-        mockMvc.perform(get("/book-store/cart/"))
+        mockMvc.perform(get("/cart/"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].userId").value("user1"))
                 .andExpect(jsonPath("$[1].userId").value("user2"));
@@ -64,7 +64,7 @@ class ShoppingCartControllerTest {
         when(shoppingCartService.getCartByUserId(userId)).thenReturn(cart);
 
         // Act and Assert
-        mockMvc.perform(get("/book-store/cart/{userId}", userId))
+        mockMvc.perform(get("/cart/{userId}", userId))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.userId").value(userId));
     }
@@ -78,7 +78,7 @@ class ShoppingCartControllerTest {
         when(shoppingCartService.getCartByUserId(userId)).thenReturn(cart);
 
         // Act and Assert
-        mockMvc.perform(get("/book-store/cart/{userId}", userId))
+        mockMvc.perform(get("/cart/{userId}", userId))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.userId").value(userId))
                 .andExpect(jsonPath("$.items").isEmpty());
@@ -97,7 +97,7 @@ class ShoppingCartControllerTest {
         when(shoppingCartService.addToCart(anyString(), any(ShoppingCart.CartItem.class))).thenReturn(cart);
 
         // Act and Assert
-        mockMvc.perform(post("/book-store/cart/{userId}/add", userId)
+        mockMvc.perform(post("/cart/{userId}/add", userId)
                 .contentType("application/json")
                 .content("{\"bookId\": \"book1\", \"quantity\": 2}"))
                 .andExpect(status().isOk())
@@ -119,7 +119,7 @@ class ShoppingCartControllerTest {
         when(shoppingCartService.updateItemQuantity(anyString(), anyString(), anyInt())).thenReturn(cart);
 
         // Act and Assert
-        mockMvc.perform(put("/book-store/cart/{userId}/update/{bookId}", userId, bookId)
+        mockMvc.perform(put("/cart/{userId}/update/{bookId}", userId, bookId)
                 .param("quantity", "5"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.items[0].quantity").value(5));
@@ -135,7 +135,7 @@ class ShoppingCartControllerTest {
         when(shoppingCartService.removeFromCart(anyString(), anyString())).thenReturn(cart);
 
         // Act and Assert
-        mockMvc.perform(delete("/book-store/cart/{userId}/remove/{bookId}", userId, bookId))
+        mockMvc.perform(delete("/cart/{userId}/remove/{bookId}", userId, bookId))
                 .andExpect(status().isOk());
     }
 
@@ -146,7 +146,7 @@ class ShoppingCartControllerTest {
         when(shoppingCartService.getCartItemCount(userId)).thenReturn(5);
 
         // Act and Assert
-        mockMvc.perform(get("/book-store/cart/{userId}/count", userId))
+        mockMvc.perform(get("/cart/{userId}/count", userId))
                 .andExpect(status().isOk())
                 .andExpect(content().string("5"));
     }
@@ -158,7 +158,7 @@ class ShoppingCartControllerTest {
         when(shoppingCartService.getCartItemCount(userId)).thenReturn(0);
 
         // Act and Assert
-        mockMvc.perform(get("/book-store/cart/{userId}/count", userId))
+        mockMvc.perform(get("/cart/{userId}/count", userId))
                 .andExpect(status().isOk())
                 .andExpect(content().string("0"));
     }
@@ -169,7 +169,7 @@ class ShoppingCartControllerTest {
         String userId = "user1";
 
         // Act and Assert
-        mockMvc.perform(delete("/book-store/cart/{userId}/clear", userId))
+        mockMvc.perform(delete("/cart/{userId}/clear", userId))
                 .andExpect(status().isOk());
     }
 }
