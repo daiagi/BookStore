@@ -6,7 +6,6 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
-import com.bookstore.config.WebSocketConfig;
 import com.bookstore.security.JwtTokenProvider;
 import com.bookstore.service.ShoppingCartService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -22,7 +21,7 @@ import java.util.logging.Logger;
 
 @Component
 public class WebSocketHandler extends TextWebSocketHandler {
-    private static final Logger LOGGER = Logger.getLogger(WebSocketConfig.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(WebSocketHandler.class.getName());
     private final Map<WebSocketSession, Integer> sessionUserMap = new ConcurrentHashMap<>();
     private final Map<Integer, Set<WebSocketSession>> bookSubscriptions = new ConcurrentHashMap<>();
     private final ObjectMapper objectMapper = new ObjectMapper();
